@@ -1,6 +1,17 @@
 # Originate CLI
 
-This is a CLI made to generate projects using the repository templates from the Originate organization
+This is a CLI made to generate projects using the repository templates from the Originate organization.
+
+## Requirements
+
+- Go 1.22+
+
+Install it with:
+```
+go install github.com/Originate/originate-cli/cmd/originate@latest
+```
+
+## Setup
 
 To set it up you need to set two environment variables:
 
