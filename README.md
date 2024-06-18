@@ -13,11 +13,6 @@ go install github.com/Originate/originate-cli/cmd/originate@latest
 
 ## Setup
 
-To set it up you need to set two environment variables:
-
-- ORIGINATE_CLI_GITHUB_USERNAME: your Github username, noting that you need to be a member of the Originate organization to use the CLI
-- ORIGINATE_CLI_GITHUB_TOKEN: a authentication token needed to clone the template repos
-
 To test it just run:
 
 ```

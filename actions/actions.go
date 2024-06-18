@@ -30,11 +30,10 @@ func GenerateNewAPI(name string, cfg config.Config) int {
 	}
 
 	_, err = git.PlainClone(tmpDir, false, &git.CloneOptions{
-		URL: "https://github.com/Originate/go-api-template.git",
-		Auth: &http.BasicAuth{
-			Username: cfg.GitHubUser,
-			Password: cfg.GitHubToken,
-		},
+		URL:           "https://github.com/Originate/go-api-template.git",
+		Depth:         1,
+		SingleBranch:  true,
+		ReferenceName: plumbing.Master,
 	})
 	if err != nil {
 		if err.Error() == "authentication required" {
