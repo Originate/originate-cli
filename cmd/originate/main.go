@@ -14,6 +14,7 @@ func main() {
 	help := flag.Bool("help", false, "Prints out the help instructions")
 	projectName := flag.String("name", "", "Name of the API to be generated")
 	filePath := flag.String("config-file", "./config/config.yml", "The config file to be used")
+	org := flag.String("organization", "Originate", "The organization to be used in the go.mod module name")
 
 	// This needs to be below all the flag definitions
 	utils.ParseFlags()
@@ -40,7 +41,12 @@ func main() {
 	action := flag.Arg(0)
 	switch action {
 	case "new":
-		os.Exit(actions.GenerateNewAPI(*projectName, cfg))
+		os.Exit(
+			actions.GenerateNewAPI(actions.GenerateAPIConfig{
+				Name:         *projectName,
+				Organization: *org,
+			}),
+		)
 	default:
 		fmt.Printf("unrecognized action: %s", action)
 		os.Exit(1)
