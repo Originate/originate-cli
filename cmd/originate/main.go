@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Originate/originate-cli/actions/api"
-	"github.com/Originate/originate-cli/config"
+	"github.com/Originate/originate-cli/actions/migrations"
 	"github.com/Originate/originate-cli/utils"
 )
 
@@ -14,19 +16,14 @@ func main() {
 	help := flag.Bool("help", false, "Prints out the help instructions")
 	name := flag.String("name", "", "Name of the resource to be generated")
 	org := flag.String("org", "Originate", "The organization to be used in the go.mod module name")
-	org := flag.String("organization", "Originate", "The organization to be used in the go.mod module name")
+	migrationsDir := flag.String("migrations-dir", "database/migrations", "The relative path to the database migrations folder, defaults to \"database/migrations\"")
 
 	// This needs to be below all the flag definitions
 	utils.ParseFlags()
 
-	var cfg config.Config
-	if err := config.Load(&cfg, *filePath); err != nil {
-		fmt.Println("failed to load all config, please check out the usage")
-		os.Exit(1)
-	}
-
 	if *help {
-		fmt.Println("Please use the command as: originate new --name \"example-api\"")
+		fmt.Println("The CLI currently supports generating APIs and managing migrations, check the Github README for more info, here is the usage for the flags:")
+		flag.Usage()
 		os.Exit(0)
 	}
 
@@ -35,20 +32,48 @@ func main() {
 		os.Exit(0)
 	}
 
-	// Here ATM it's just generating a backend API but the idea is to have all sorts of boilerplates
-	// to generate from like: a full monorepo boilerplate with bezel for multi-language monorepos
-	// or a pnpm + turbo managed one for JS/TS monorepos
-	action := flag.Arg(0)
-	switch action {
-	case "new":
+	entity := flag.Arg(0)
+	action := flag.Arg(1)
+
+	actionAndEntity := strings.Join([]string{entity, action}, " ")
+	switch actionAndEntity {
+	case "api new":
 		os.Exit(
 			api.GenerateNewAPI(api.GenerateAPIConfig{
 				Name:         *name,
 				Organization: *org,
 			}),
 		)
+	case "migrations new":
+		os.Exit(
+			migrations.CreateNewMigration(migrations.CreateMigrationInput{
+				MigrationName: *name,
+				MigrationsDir: *migrationsDir,
+			}),
+		)
+	case "migrations up":
+		os.Exit(
+			migrations.Up(migrations.MigrationsInput{
+				MigrationsDir: *migrationsDir,
+				Context:       context.Background(),
+			}),
+		)
+	case "migrations down":
+		os.Exit(
+			migrations.Down(migrations.MigrationsInput{
+				MigrationsDir: *migrationsDir,
+				Context:       context.Background(),
+			}),
+		)
+	case "migrations reset":
+		os.Exit(
+			migrations.Reset(migrations.MigrationsInput{
+				MigrationsDir: *migrationsDir,
+				Context:       context.Background(),
+			}),
+		)
 	default:
-		fmt.Printf("unrecognized action: %s", action)
+		fmt.Printf("unrecognized action: %s", actionAndEntity)
 		os.Exit(1)
 	}
 }
