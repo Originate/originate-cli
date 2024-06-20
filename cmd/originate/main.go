@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Originate/originate-cli/actions"
+	"github.com/Originate/originate-cli/actions/api"
 	"github.com/Originate/originate-cli/config"
 	"github.com/Originate/originate-cli/utils"
 )
 
 func main() {
 	help := flag.Bool("help", false, "Prints out the help instructions")
-	projectName := flag.String("name", "", "Name of the API to be generated")
-	filePath := flag.String("config-file", "./config/config.yml", "The config file to be used")
+	name := flag.String("name", "", "Name of the resource to be generated")
+	org := flag.String("org", "Originate", "The organization to be used in the go.mod module name")
 	org := flag.String("organization", "Originate", "The organization to be used in the go.mod module name")
 
 	// This needs to be below all the flag definitions
@@ -42,8 +42,8 @@ func main() {
 	switch action {
 	case "new":
 		os.Exit(
-			actions.GenerateNewAPI(actions.GenerateAPIConfig{
-				Name:         *projectName,
+			api.GenerateNewAPI(api.GenerateAPIConfig{
+				Name:         *name,
 				Organization: *org,
 			}),
 		)
