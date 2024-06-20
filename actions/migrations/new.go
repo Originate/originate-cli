@@ -2,12 +2,12 @@ package migrations
 
 import (
 	"fmt"
-	"html/template"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/Originate/go-utilities/utils"
+	"github.com/Originate/originate-cli/actions/migrations/templates"
 )
 
 type CreateMigrationInput struct {
@@ -41,21 +41,10 @@ func CreateNewMigration(i CreateMigrationInput) int {
 	}
 	defer f.Close()
 
-	if err := sqlMigrationTemplate.Execute(f, nil); err != nil {
+	if err := templates.SQLMigrationTemplate.Execute(f, nil); err != nil {
 		return 1
 	}
 
 	fmt.Printf("Created new file: %s\n", filename)
 	return 0
 }
-
-var sqlMigrationTemplate = template.Must(template.New("goose.sql-migration").Parse(`-- +goose Up
--- +goose StatementBegin
-SELECT 'up SQL query';
--- +goose StatementEnd
-
--- +goose Down
--- +goose StatementBegin
-SELECT 'down SQL query';
--- +goose StatementEnd
-`))
